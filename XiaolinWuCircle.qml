@@ -40,13 +40,13 @@ QtObject {
         while (x > y)
         {
             ++y;
-            x = Math.ceil(Math.sqrt(R * R + y * y));
+            x = Math.ceil(Math.sqrt(R * R - y * y));
             var T = D(R, y);
-            var lowerGreyLevel = T;
-            var upperGreyLevel = 1 - T;
-            setColor(grey(lowerGreyLevel))
+            var rightGreyLevel = T;
+            var leftGreyLevel = 1 - T;
+            setColor(grey(rightGreyLevel))
             put(x, y);
-            setColor(grey(upperGreyLevel))
+            setColor(grey(leftGreyLevel))
             put(x - 1, y);
         }
         setColor(grey(0))
