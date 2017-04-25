@@ -35,18 +35,16 @@ QtObject {
 
         var m = dy/dx
         var y = fakeStart.y
-        for (var x = fakeStart.x; x <= fakeEnd.x; ++x)
+        for (var x = fakeStart.x + 1; x <= fakeEnd.x - 1; ++x)
         {
             // Hardcode the colors as L = black, B = white instead:
             var upperGreyLevel = y - Math.floor(y)
-            console.log("Upper: " + upperGreyLevel)
             c.fillStyle = grey(upperGreyLevel)
-            fakePut(Qt.point(x, y))
+            fakePut(Qt.point(x, Math.floor(y)))
 
             var lowerGreyLevel = 1 - upperGreyLevel
-            console.log("Lower: " + lowerGreyLevel)
             c.fillStyle = grey(lowerGreyLevel)
-            fakePut(Qt.point(x, y + 1))
+            fakePut(Qt.point(x, Math.floor(y) + 1))
 
             /*
             for (var i = 0; i < (thickness - 1) / 2; i++) {
@@ -56,6 +54,10 @@ QtObject {
             */
             y += m
         }
+
+        c.fillStyle = grey(0)
+        fakePut(fakeStart)
+        fakePut(fakeEnd)
     }
 
     function copy(point) {
@@ -67,7 +69,7 @@ QtObject {
     }
 
     function putPixel(point, c) {
-        c.fillRect(Math.round(point.x), Math.round(point.y), 1, 1) // TODO optimize
+        c.fillRect(point.x, point.y, 1, 1) // TODO optimize
     }
 
     function grey(level) {
