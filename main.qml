@@ -9,10 +9,24 @@ ApplicationWindow {
     Canvas {
         anchors.fill: parent
 
+        property variant color: Qt.rgba(1, 0, 0, 1)
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                parent.color = Qt.rgba(0, 1, 0, 1)
+            }
+        }
+
         onPaint: {
             var c = getContext("2d")
-            c.fillStyle = Qt.rgba(1, 0, 0, 1)
+            c.fillStyle = color
             c.fillRect(0, 0, width, height)
+        }
+
+        onColorChanged: {
+            requestPaint()
         }
     }
 }
