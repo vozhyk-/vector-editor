@@ -16,15 +16,14 @@ ApplicationWindow {
         MouseArea {
             anchors.fill: parent
 
-            property var lineStart: null
+            property var lineStart
 
-            onClicked: {
-                if (lineStart === null) {
-                    lineStart = Qt.point(mouseX, mouseY)
-                } else {
-                    canvas.addLine(lineStart, Qt.point(mouseX, mouseY))
-                    lineStart = null
-                }
+            onPressed: {
+                lineStart = Qt.point(mouseX, mouseY)
+            }
+
+            onReleased: {
+                canvas.addLine(lineStart, Qt.point(mouseX, mouseY))
             }
         }
 
