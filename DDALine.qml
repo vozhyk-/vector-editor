@@ -5,15 +5,48 @@ QtObject {
     property point end
 
     function paint(c) {
-        var dy = end.y - start.y
-        var dx = end.x - start.x
+        var fakeStart = copy(start)
+        var fakeEnd = copy(end)
+        var fakePut = function(fakePoint) {
+            putPixel(fakePoint, c)
+        }
+
+        var dy = fakeEnd.y - fakeStart.y
+        var dx = fakeEnd.x - fakeStart.x
+
+        if (Math.abs(dx) < Math.abs(dy)) {
+            fakeStart = rotate(start)
+            fakeEnd = rotate(end)
+            fakePut = function(fakePoint) {
+                putPixel(rotate(fakePoint), c)
+            }
+        }
+
+        if (fakeEnd.x < fakeStart.x) {
+            var temp = copy(fakeStart)
+            fakeStart = fakeEnd
+            fakeEnd = temp
+        }
+
+
+        dy = fakeEnd.y - fakeStart.y
+        dx = fakeEnd.x - fakeStart.x
+
         var m = dy/dx
-        var y = start.y
-        for (var x = start.x; x <= end.x; ++x)
+        var y = fakeStart.y
+        for (var x = fakeStart.x; x <= fakeEnd.x; ++x)
         {
-            putPixel(Qt.point(x, y), c)
+            fakePut(Qt.point(x, y))
             y += m
         }
+    }
+
+    function copy(point) {
+        return Qt.point(point.x, point.y)
+    }
+
+    function rotate(point) {
+        return Qt.point(point.y, point.x)
     }
 
     function putPixel(point, c) {
