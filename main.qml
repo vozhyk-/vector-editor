@@ -24,6 +24,11 @@ ApplicationWindow {
                 onClicked: canvas.mode = canvas.modes.ddaLine
             }
 
+            Button {
+                text: "Midpoint circle"
+                onClicked: canvas.mode = canvas.modes.midpointCircle
+            }
+
             Text {
                 text: "Thickness:"
             }
@@ -46,6 +51,7 @@ ApplicationWindow {
             property QtObject modes: QtObject {
                 property string builtInLine: "built-in line"
                 property string ddaLine: "DDA line"
+                property string midpointCircle: "Midpoint circle"
             }
 
             MouseArea {
@@ -75,6 +81,10 @@ ApplicationWindow {
 
                 case modes.ddaLine:
                     component = Qt.createComponent("DDALine.qml")
+                    break
+
+                case modes.midpointCircle:
+                    component = Qt.createComponent("MidpointCircle.qml")
                     break
                 }
 
