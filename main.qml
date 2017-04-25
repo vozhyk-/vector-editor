@@ -99,6 +99,7 @@ ApplicationWindow {
                 }
 
                 if (component.status != Component.Ready) {
+                    console.log(component.errorString())
                     return
                 }
 
