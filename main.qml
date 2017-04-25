@@ -23,6 +23,16 @@ ApplicationWindow {
                 text: "DDA line"
                 onClicked: canvas.mode = canvas.modes.ddaLine
             }
+
+            Text {
+                text: "Thickness:"
+            }
+
+            TextField {
+                id: thicknessField
+                placeholderText: "1"
+                validator: IntValidator {}
+            }
         }
 
         Canvas {
@@ -69,13 +79,13 @@ ApplicationWindow {
                 }
 
                 if (component.status != Component.Ready) {
-                    console.log(component.errorString())
                     return
                 }
 
                 var line = component.createObject(this, {
                     start: start,
-                    end: end
+                    end: end,
+                    thickness: parseInt(thicknessField.text)
                 })
 
                 shapes.push(line)

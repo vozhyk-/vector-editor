@@ -3,6 +3,7 @@ import QtQml 2.2
 QtObject {
     property point start
     property point end
+    property int thickness
 
     function paint(c) {
         var fakeStart = copy(start)
@@ -37,6 +38,10 @@ QtObject {
         for (var x = fakeStart.x; x <= fakeEnd.x; ++x)
         {
             fakePut(Qt.point(x, y))
+            for (var i = 0; i < (thickness - 1) / 2; i++) {
+                fakePut(Qt.point(x, y - i))
+                fakePut(Qt.point(x, y + i))
+            }
             y += m
         }
     }
@@ -50,6 +55,6 @@ QtObject {
     }
 
     function putPixel(point, c) {
-        c.fillRect(point.x, point.y, 1, 1) // TODO optimize
+        c.fillRect(Math.round(point.x), Math.round(point.y), 1, 1) // TODO optimize
     }
 }
