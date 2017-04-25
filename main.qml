@@ -18,6 +18,11 @@ ApplicationWindow {
                 text: "Built-in line"
                 onClicked: canvas.mode = canvas.modes.builtInLine
             }
+
+            Button {
+                text: "DDA line"
+                onClicked: canvas.mode = canvas.modes.ddaLine
+            }
         }
 
         Canvas {
@@ -30,6 +35,7 @@ ApplicationWindow {
 
             property QtObject modes: QtObject {
                 property string builtInLine: "built-in line"
+                property string ddaLine: "DDA line"
             }
 
             MouseArea {
@@ -55,11 +61,16 @@ ApplicationWindow {
 
                 case modes.builtInLine:
                     component = Qt.createComponent("BuiltInLine.qml")
-                    if (component.status != Component.Ready) {
-                        console.log("Component not ready!")
-                        return
-                    }
                     break
+
+                case modes.ddaLine:
+                    component = Qt.createComponent("DDALine.qml")
+                    break
+                }
+
+                if (component.status != Component.Ready) {
+                    console.log("Component not ready!")
+                    return
                 }
 
                 var line = component.createObject(this, {
