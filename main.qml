@@ -34,6 +34,11 @@ ApplicationWindow {
                 onClicked: canvas.mode = canvas.modes.xiaolinWuLine
             }
 
+            Button {
+                text: "Xiaolin Wu circle"
+                onClicked: canvas.mode = canvas.modes.xiaolinWuCircle
+            }
+
             Text {
                 text: "Thickness:"
             }
@@ -58,6 +63,7 @@ ApplicationWindow {
                 property string ddaLine: "DDA line"
                 property string midpointCircle: "Midpoint circle"
                 property string xiaolinWuLine: "Xiaolin Wu line"
+                property string xiaolinWuCircle: "Xiaolin Wu circle"
             }
 
             MouseArea {
@@ -95,6 +101,10 @@ ApplicationWindow {
 
                 case modes.xiaolinWuLine:
                     component = Qt.createComponent("XiaolinWuLine.qml")
+                    break
+
+                case modes.xiaolinWuCircle:
+                    component = Qt.createComponent("XiaolinWuCircle.qml")
                     break
                 }
 
