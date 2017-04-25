@@ -7,26 +7,48 @@ ApplicationWindow {
     title: "Vector Editor"
 
     Canvas {
+        id: canvas
+
         anchors.fill: parent
 
-        property variant color: Qt.rgba(1, 0, 0, 1)
+        property var shapes: []
 
         MouseArea {
             anchors.fill: parent
 
+            property var lineStart: null
+
             onClicked: {
-                parent.color = Qt.rgba(0, 1, 0, 1)
+                if (lineStart === null) {
+                    lineStart = Qt.point(mouseX, mouseY)
+                } else {
+                    canvas.addLine(lineStart, Qt.point(mouseX, mouseY))
+                    lineStart = null
+                }
             }
+        }
+
+        function addLine(start, end) {
+            shapes.push({
+                start: start,
+                end: end
+            })
+
+            requestPaint()
         }
 
         onPaint: {
             var c = getContext("2d")
-            c.fillStyle = color
-            c.fillRect(0, 0, width, height)
-        }
+            c.fillStyle = "red"
 
-        onColorChanged: {
-            requestPaint()
+            for (var i in shapes) {
+                var line = shapes[i]
+
+                c.beginPath()
+                c.moveTo(line.start.x, line.start.y)
+                c.lineTo(line.end.x, line.end.y)
+                c.stroke()
+            }
         }
     }
 }
