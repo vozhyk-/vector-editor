@@ -47,6 +47,62 @@ QtObject {
             y += m
         }
         */
+
+        var dist = Qt.point(end.x - start.x, end.y - start.y)
+        var R = Math.sqrt(dist.x * dist.x + dist.y * dist.y)
+
+        var putRelative = function(x, y) {
+            putPixel(Qt.point(start.x + x, start.y + y), c)
+        }
+
+        var putVerticals = function(putRelative) {
+            midpointCircle(R, function(x, y) {
+                putRelative(x, y)
+            })
+            midpointCircle(R, function(x, y) {
+                putRelative(x, -y)
+            })
+            midpointCircle(R, function(x, y) {
+                putRelative(-x, y)
+            })
+            midpointCircle(R, function(x, y) {
+                putRelative(-x, -y)
+            })
+        }
+
+        putVerticals(putRelative)
+        putVerticals(function(x, y) {
+            putRelative(y, x)
+        })
+    }
+
+    function midpointCircle(R, put) {
+        var dE = 3;
+        var dSE = 5-2*R;
+        var d = 1-R;
+        var x = 0;
+        var y = R;
+        put(x, y)
+        while (y > x)
+        {
+            if (d < 0)
+                //move to E
+            {
+                d += dE;
+                dE += 2;
+                dSE += 2;
+            }
+            else
+                //move to SE
+            {
+                d += dSE;
+                dE += 2;
+                dSE += 4;
+                --y;
+            }
+            ++x;
+            put(x, y)
+        }
     }
 
     function copy(point) {
