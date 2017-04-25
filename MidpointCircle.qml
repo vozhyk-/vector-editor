@@ -55,24 +55,16 @@ QtObject {
             putPixel(Qt.point(start.x + x, start.y + y), c)
         }
 
-        var putVerticals = function(putRelative) {
-            midpointCircle(R, function(x, y) {
-                putRelative(x, y)
-            })
-            midpointCircle(R, function(x, y) {
-                putRelative(x, -y)
-            })
-            midpointCircle(R, function(x, y) {
-                putRelative(-x, y)
-            })
-            midpointCircle(R, function(x, y) {
-                putRelative(-x, -y)
-            })
+        var putMiddle = function(x, y) {
+            putRelative(x, y)
+            putRelative(x, -y)
+            putRelative(-x, y)
+            putRelative(-x, -y)
         }
 
-        putVerticals(putRelative)
-        putVerticals(function(x, y) {
-            putRelative(y, x)
+        midpointCircle(R, function(x, y) {
+            putMiddle(x, y)
+            putMiddle(y, x)
         })
     }
 
