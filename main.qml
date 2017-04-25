@@ -104,6 +104,7 @@ ApplicationWindow {
 
             onPaint: {
                 var c = getContext("2d")
+                c.clearRect(0, 0, width, height)
 
                 for (var i in shapes) {
                     var line = shapes[i]
