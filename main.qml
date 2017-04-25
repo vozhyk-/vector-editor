@@ -69,7 +69,7 @@ ApplicationWindow {
                 }
 
                 if (component.status != Component.Ready) {
-                    console.log("Component not ready!")
+                    console.log(component.errorString())
                     return
                 }
 
