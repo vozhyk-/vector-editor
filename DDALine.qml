@@ -38,7 +38,7 @@ QtObject {
         for (var x = fakeStart.x; x <= fakeEnd.x; ++x)
         {
             fakePut(Qt.point(x, y))
-            for (var i = 0; i < (thickness - 1) / 2; i++) {
+            for (var i = 0; i < (thickness) / 2; i++) {
                 fakePut(Qt.point(x, y - i))
                 fakePut(Qt.point(x, y + i))
             }
