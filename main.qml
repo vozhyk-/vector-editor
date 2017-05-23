@@ -54,6 +54,11 @@ ApplicationWindow {
                 onClicked: canvas.mode = canvas.modes.clippedXWLine
             }
 
+            Button {
+                text: "Fill the last polygon"
+                onClicked: canvas.fillLastPolygon()
+            }
+
             Text {
                 text: "Thickness:"
             }
@@ -83,6 +88,7 @@ ApplicationWindow {
                 property string definePolygon: "Define polygon"
                 property string floodFill: "Flood fill"
                 property string clippedXWLine: "Clipped X-W line"
+                property string fillPolygon: "Fill the last polygon"
             }
 
             property var polygonComponent
@@ -198,6 +204,11 @@ ApplicationWindow {
                 }
 
                 shapes.push(line)
+                requestPaint()
+            }
+
+            function fillLastPolygon() {
+                lastPolygon.filled = true
                 requestPaint()
             }
 
