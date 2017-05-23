@@ -40,6 +40,11 @@ ApplicationWindow {
             }
 
             Button {
+                text: "Flood fill"
+                onClicked: canvas.mode = canvas.modes.floodFill
+            }
+
+            Button {
                 text: "Define a polygon"
                 onClicked: canvas.mode = canvas.modes.definePolygon
             }
@@ -71,14 +76,17 @@ ApplicationWindow {
                 property string xiaolinWuLine: "Xiaolin Wu line"
                 property string xiaolinWuCircle: "Xiaolin Wu circle"
                 property string definePolygon: "Define polygon"
+                property string floodFill: "Flood fill"
             }
 
             property var polygonComponent
             property var xiaolinWuLineComponent
+            property var floodFillComponent
 
             Component.onCompleted: {
                 polygonComponent = createComponent("Polygon.qml")
                 xiaolinWuLineComponent = createComponent("XiaolinWuLine.qml")
+                floodFillComponent = createComponent("FloodFill.qml")
             }
 
             function createComponent(filename) {
@@ -121,6 +129,12 @@ ApplicationWindow {
                         lastPolygon.addPoint(end)
                     }
 
+                    requestPaint()
+                    return
+                } else if (mode === modes.floodFill) {
+                    shapes.push(floodFillComponent.createObject(this, {
+                        point: end
+                    }))
                     requestPaint()
                     return
                 }
@@ -169,7 +183,9 @@ ApplicationWindow {
 
             onPaint: {
                 var c = getContext("2d")
-                c.clearRect(0, 0, width, height)
+                c.fillStyle = Qt.rgba(1, 1, 1, 1)
+                c.fillRect(0, 0, width, height)
+                c.fillStyle = Qt.rgba(0, 0, 0, 1)
 
                 for (var i in shapes) {
                     var line = shapes[i]
