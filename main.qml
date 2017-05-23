@@ -49,6 +49,11 @@ ApplicationWindow {
                 onClicked: canvas.mode = canvas.modes.definePolygon
             }
 
+            Button {
+                text: "Clipped X-W line"
+                onClicked: canvas.mode = canvas.modes.clippedXWLine
+            }
+
             Text {
                 text: "Thickness:"
             }
@@ -77,16 +82,19 @@ ApplicationWindow {
                 property string xiaolinWuCircle: "Xiaolin Wu circle"
                 property string definePolygon: "Define polygon"
                 property string floodFill: "Flood fill"
+                property string clippedXWLine: "Clipped X-W line"
             }
 
             property var polygonComponent
             property var xiaolinWuLineComponent
             property var floodFillComponent
+            property var clippedXWLineComponent
 
             Component.onCompleted: {
                 polygonComponent = createComponent("Polygon.qml")
                 xiaolinWuLineComponent = createComponent("XiaolinWuLine.qml")
                 floodFillComponent = createComponent("FloodFill.qml")
+                clippedXWLineComponent = createComponent("ClippedXWLine.qml")
             }
 
             function createComponent(filename) {
@@ -164,6 +172,10 @@ ApplicationWindow {
                 case modes.xiaolinWuCircle:
                     component = Qt.createComponent("XiaolinWuCircle.qml")
                     break
+
+                case modes.clippedXWLine:
+                    component = xiaolinWuLineComponent
+                    break
                 }
 
                 if (component.status != Component.Ready) {
@@ -176,6 +188,14 @@ ApplicationWindow {
                     end: end,
                     thickness: parseInt(thicknessField.text)
                 })
+
+                if (mode === modes.clippedXWLine) {
+                    line = clippedXWLineComponent.createObject(this, {
+                        line: line,
+                        lineComponent: xiaolinWuLineComponent,
+                        polygon: lastPolygon
+                    })
+                }
 
                 shapes.push(line)
                 requestPaint()

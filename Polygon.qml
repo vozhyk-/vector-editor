@@ -1,7 +1,7 @@
 import QtQml 2.2
 
 QtObject {
-    property XiaolinWuLine firstLine
+    property var firstLine
     property var lineComponent
 
     property var lines: [firstLine]
