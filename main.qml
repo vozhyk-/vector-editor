@@ -39,6 +39,11 @@ ApplicationWindow {
                 onClicked: canvas.mode = canvas.modes.xiaolinWuCircle
             }
 
+            Button {
+                text: "Define a polygon"
+                onClicked: canvas.mode = canvas.modes.definePolygon
+            }
+
             Text {
                 text: "Thickness:"
             }
@@ -56,6 +61,7 @@ ApplicationWindow {
             Layout.fillHeight: true
 
             property var shapes: []
+            property var lastPolygon
             property string mode
 
             property QtObject modes: QtObject {
@@ -64,6 +70,26 @@ ApplicationWindow {
                 property string midpointCircle: "Midpoint circle"
                 property string xiaolinWuLine: "Xiaolin Wu line"
                 property string xiaolinWuCircle: "Xiaolin Wu circle"
+                property string definePolygon: "Define polygon"
+            }
+
+            property var polygonComponent
+            property var xiaolinWuLineComponent
+
+            Component.onCompleted: {
+                polygonComponent = createComponent("Polygon.qml")
+                xiaolinWuLineComponent = createComponent("XiaolinWuLine.qml")
+            }
+
+            function createComponent(filename) {
+                var result = Qt.createComponent(filename)
+
+                if (result.status != Component.Ready) {
+                    console.log(result.errorString())
+                    return undefined
+                }
+
+                return result
             }
 
             MouseArea {
@@ -81,6 +107,24 @@ ApplicationWindow {
             }
 
             function addLine(start, end) {
+                if (mode === modes.definePolygon) {
+                    if (!lastPolygon) {
+                        lastPolygon = polygonComponent.createObject(this, {
+                            firstLine: xiaolinWuLineComponent.createObject(this, {
+                                start: start,
+                                end: end
+                            }),
+                            lineComponent: xiaolinWuLineComponent
+                        })
+                        shapes.push(lastPolygon)
+                    } else {
+                        lastPolygon.addPoint(end)
+                    }
+
+                    requestPaint()
+                    return
+                }
+                
                 var component
 
                 switch (mode) {
@@ -100,7 +144,7 @@ ApplicationWindow {
                     break
 
                 case modes.xiaolinWuLine:
-                    component = Qt.createComponent("XiaolinWuLine.qml")
+                    component = xiaolinWuLineComponent
                     break
 
                 case modes.xiaolinWuCircle:
