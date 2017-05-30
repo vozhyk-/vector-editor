@@ -55,6 +55,11 @@ ApplicationWindow {
             }
 
             Button {
+                text: "Cube"
+                onClicked: canvas.mode = canvas.modes.cube
+            }
+
+            Button {
                 text: "Fill the last polygon"
                 onClicked: canvas.fillLastPolygon()
             }
@@ -89,18 +94,21 @@ ApplicationWindow {
                 property string floodFill: "Flood fill"
                 property string clippedXWLine: "Clipped X-W line"
                 property string fillPolygon: "Fill the last polygon"
+                property string cube: "Cube"
             }
 
             property var polygonComponent
             property var xiaolinWuLineComponent
             property var floodFillComponent
             property var clippedXWLineComponent
+            property var cubeComponent
 
             Component.onCompleted: {
                 polygonComponent = createComponent("Polygon.qml")
                 xiaolinWuLineComponent = createComponent("XiaolinWuLine.qml")
                 floodFillComponent = createComponent("FloodFill.qml")
                 clippedXWLineComponent = createComponent("ClippedXWLine.qml")
+                cubeComponent = createComponent("Cube.qml")
             }
 
             function createComponent(filename) {
@@ -151,6 +159,14 @@ ApplicationWindow {
                     }))
                     requestPaint()
                     return
+                } else if (mode === modes.cube) {
+                    shapes.push(cubeComponent.createObject(this, {
+                        start: start,
+                        end: end,
+                        lineComponent: xiaolinWuLineComponent
+                    }))
+                    requestPaint()
+                    return
                 }
                 
                 var component
@@ -181,6 +197,10 @@ ApplicationWindow {
 
                 case modes.clippedXWLine:
                     component = xiaolinWuLineComponent
+                    break
+
+                case modes.cube:
+                    component = cubeComponent
                     break
                 }
 
