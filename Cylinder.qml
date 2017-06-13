@@ -9,41 +9,74 @@ LineMesh {
     Component.onCompleted: {
         height = 1
         radius = 1
-
-        lines = computeLines()
     }
 
-    function computeLines() {
+    function paint(c) {
+        computeProjectedLines().forEach(function(projectedPoints) {
+            drawProjectedLine(c, makeDrawnLine(projectedPoints))
+        })
+    }
+
+    function computeProjectedLines() {
         var triangles = computeTriangles()
 
         var result = []
         triangles.forEach(function(triangle) {
-            result.push([triangle[0], triangle[1]])
-            result.push([triangle[1], triangle[2]])
-            result.push([triangle[2], triangle[0]])
+            var projected = triangle.map(transformAndProjectPoint)
+
+            if (!shouldBeDrawn(projected))
+                return;
+
+            result.push([projected[0], projected[1]])
+            result.push([projected[1], projected[2]])
+            result.push([projected[2], projected[0]])
         })
         return result
     }
 
+    function shouldBeDrawn(projected) {
+        var prod = crossProduct([
+            projected[1].x - projected[0].x,
+            projected[1].y - projected[0].y,
+            0
+        ], [
+            projected[2].x - projected[0].x,
+            projected[2].y - projected[0].y,
+            0
+        ])
+
+        return prod[2] > 0
+    }
+
+    function crossProduct(/* 3D point */ a, /* 3D point */ b) {
+        return [
+            a[1] * b[2] - a[2] * b[1],
+            a[0] * b[2] - a[2] * b[0],
+            a[0] * b[1] - a[1] * b[0]
+        ]
+    }
+
     function computeTriangles() {
+        // "lower" is actually above "upper"
         var lowerBaseVertices = computeBaseVertices(-height)
         var upperBaseVertices = computeBaseVertices(height)
         
-        var result = computeBase(lowerBaseVertices)
+        var result = computeBase(lowerBaseVertices, false)
             .concat(computeSides(lowerBaseVertices, upperBaseVertices))
-            .concat(computeBase(upperBaseVertices))
+            .concat(computeBase(upperBaseVertices, true))
         
         return result
     }
 
-    function computeBase(baseVertices) {
+    function computeBase(baseVertices, reverse) {
         var result = []
         for (var i = 0; i < nPrismSides; i++) {
-            result.push( /* triangle */ [
-                baseVertices[0],
-                baseVertices[(i + 1) % nPrismSides + 1],
-                baseVertices[i + 1]
-            ])
+            var a = baseVertices[0]
+            var b = baseVertices[(i + 1) % nPrismSides + 1]
+            var c = baseVertices[i + 1]
+
+            result.push( /* triangle */
+                !reverse ? [a, b, c] : [a, c, b])
         }
         return result
     }

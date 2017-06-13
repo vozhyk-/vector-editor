@@ -36,11 +36,16 @@ QtObject {
 
     function transformAndProjectLine(line) {
         return line
-            .map(toAffine)
-            .map(rotate)
-            .map(makeFarther)
-            .map(project)
-            .map(makeQtPoint)
+            .map(transformAndProjectPoint)
+    }
+
+    function transformAndProjectPoint(_3DPoint) {
+        return makeQtPoint(
+            project(
+                makeFarther(
+                    rotate(
+                        toAffine(
+                            _3DPoint)))))
     }
 
     function drawProjectedLine(c, drawnLine) {
