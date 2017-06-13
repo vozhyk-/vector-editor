@@ -7,6 +7,7 @@ QtObject {
 
     property double rotation: 0
     property double distance: 3
+    property double distanceChange: 0.25
 
     property double size
 

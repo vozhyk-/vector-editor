@@ -142,6 +142,16 @@ ApplicationWindow {
                 onReleased: {
                     canvas.addLine(lineStart, Qt.point(mouseX, mouseY))
                 }
+
+                onWheel: {
+                    canvas.shapes.forEach(function(shape) {
+                        if (shape.distance == undefined)
+                            return
+
+                        shape.distance += shape.distanceChange *
+                            wheel.angleDelta.y / 120
+                    })
+                }
             }
 
             function addLine(start, end) {
