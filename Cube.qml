@@ -35,23 +35,8 @@ QtObject {
         lines.map(function(line) {
             var projectedPoints = line
                 .map(toAffine)
-                .map(function(point) {
-                    return point.map(function(i) {
-                        return i * size
-                    })
-                })
                 .map(project)
-                //.map(p)
                 .map(makeQtPoint)
-                .map(function(qtPoint) {
-                    return qtPoint//add(qtPoint, start)
-                })
-
-            /*
-            projectedPoints.forEach(function(point) {
-                console.log(point)
-            })
-            */
 
             return lineComponent.createObject(this, {
                 start: projectedPoints[0],
