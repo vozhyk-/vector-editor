@@ -65,6 +65,16 @@ ApplicationWindow {
             }
 
             Button {
+                text: "Rotate 3D meshes"
+                onClicked: canvas.mode = canvas.modes.rotate
+            }
+
+            CheckBox {
+                id: animateRotation
+                text: "Animate 3D mesh rotation"
+            }
+
+            Button {
                 text: "Fill the last polygon"
                 onClicked: canvas.fillLastPolygon()
             }
@@ -101,6 +111,7 @@ ApplicationWindow {
                 property string fillPolygon: "Fill the last polygon"
                 property string cube: "Cube"
                 property string cylinder: "Cylinder"
+                property string rotate: "Rotate"
             }
 
             property var polygonComponent
@@ -151,6 +162,8 @@ ApplicationWindow {
                         shape.distance += shape.distanceChange *
                             wheel.angleDelta.y / 120
                     })
+
+                    canvas.requestPaint()
                 }
             }
 
@@ -193,8 +206,17 @@ ApplicationWindow {
                     }))
                     requestPaint()
                     return
+                } else if (mode === modes.rotate) {
+                    shapes.forEach(function(shape) {
+                        if (shape.adjustRotation === undefined)
+                            return
+
+                        shape.adjustRotation(start, end)
+                    })
+                    requestPaint()
+                    return
                 }
-                
+
                 var component
 
                 switch (mode) {
@@ -278,16 +300,15 @@ ApplicationWindow {
             Timer {
                 interval: 1000 / 30
                 repeat: true
-                running: true
+                running: animateRotation.checked
 
                 onTriggered: {
-                    //console.log("Timer triggered")
                     canvas.shapes.forEach(function(shape) {
                         shape.updateAnimation &&
                             shape.updateAnimation()
-
-                        canvas.requestPaint()
                     })
+
+                    canvas.requestPaint()
                 }
             }
         }

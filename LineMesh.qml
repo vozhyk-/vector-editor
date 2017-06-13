@@ -5,7 +5,7 @@ QtObject {
     property point end
     property var lineComponent
 
-    property double rotation: 0
+    property point rotation: "0, 0"
     property double distance: 3
     property double distanceChange: 0.25
 
@@ -18,7 +18,14 @@ QtObject {
     }
 
     function updateAnimation() {
-        rotation += Math.PI / 96
+        var increment = Math.PI / 96
+        rotation.x += increment
+        rotation.y += increment / 9
+    }
+
+    function adjustRotation(start, end) {
+        var change = constProduct(1 / size * distance, sub(end, start))
+        rotation = add(rotation, change)
     }
 
     function paint(c) {
@@ -73,9 +80,10 @@ QtObject {
     }
 
     function rotate(affine3DPoint) {
-        return rotateY(rotation, rotateX(rotation / 9, affine3DPoint))
+        return rotateY(-rotation.x, rotateX(rotation.y / 9, affine3DPoint))
     }
 
+    // Rotate about the Y axis
     function rotateY(rotation, affine3DPoint) {
         var c = Math.cos(rotation)
         var s = Math.sin(rotation)
@@ -88,6 +96,7 @@ QtObject {
         return applyMat(rotationMat, affine3DPoint)
     }
 
+    // Rotate about the X axis
     function rotateX(rotation, affine3DPoint) {
         var c = Math.cos(rotation)
         var s = Math.sin(rotation)
