@@ -3,6 +3,7 @@ import QtQml 2.2
 QtObject {
     property point start
     property point end
+    property double rotation: 0
     property var lineComponent
 
     property double size // half of the diagonal
@@ -31,10 +32,18 @@ QtObject {
         ]
     }
 
+    function updateAnimation() {
+        rotation += Math.PI / 96
+    }
+
     function paint(c) {
+        /* console.log("Painting") */
+        /* console.log("Rotation: " + rotation) */
         lines.map(function(line) {
             var projectedPoints = line
                 .map(toAffine)
+                .map(rotate)
+                .map(makeFarther)
                 .map(project)
                 .map(makeQtPoint)
 
@@ -43,13 +52,46 @@ QtObject {
                 end: projectedPoints[1]
             })
         }).forEach(function(drawnLine) {
+            if (abs(sub(drawnLine.end, drawnLine.start)) > 10000)
+                // Line too long - most likely an error
+                return;
+
+            /* console.log("Drawing line " + */
+            /*             drawnLine.start + " -> " + */
+            /*             drawnLine.end) */
             drawnLine.paint(c)
+            /* console.log("Done") */
         })
+        /* console.log("Done painting") */
     }
 
     function p(val) {
         console.log(JSON.stringify(val))
         return val
+    }
+
+    function rotate(affine3DPoint) {
+        var c = Math.cos(rotation)
+        var s = Math.sin(rotation)
+        // Rotation about y
+        var rotationMat = [
+            [ c, 0, s, 0],
+            [ 0, 1, 0, 0],
+            [-s, 0, c, 0],
+            [ 0, 0, 0, 1]
+        ]
+        return matmul(rotationMat, toMat(affine3DPoint))
+    }
+
+    function makeFarther(affine3DPoint) {
+        var offset = 3
+        var translationMat = [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, offset],
+            [0, 0, 0, 1],
+        ]
+        return matmul(translationMat, toMat(affine3DPoint))
     }
 
     function project(affine3DPoint) {

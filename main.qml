@@ -244,6 +244,22 @@ ApplicationWindow {
                     line.paint(c)
                 }
             }
+
+            Timer {
+                interval: 1000 / 30
+                repeat: true
+                running: true
+
+                onTriggered: {
+                    //console.log("Timer triggered")
+                    canvas.shapes.forEach(function(shape) {
+                        shape.updateAnimation &&
+                            shape.updateAnimation()
+
+                        canvas.requestPaint()
+                    })
+                }
+            }
         }
     }
 }
