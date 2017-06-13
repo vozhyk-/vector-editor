@@ -4,6 +4,7 @@ QtObject {
     property point start
     property point end
     property var lineComponent
+    property point canvasSize
 
     property point rotation: "0, 0"
     property double distance: 3
@@ -24,7 +25,7 @@ QtObject {
     }
 
     function adjustRotation(start, end) {
-        var change = constProduct(1 / size * distance, sub(end, start))
+        var change = constProduct(1 / size, sub(end, start))
         rotation = add(rotation, change)
     }
 
@@ -80,7 +81,7 @@ QtObject {
     }
 
     function rotate(affine3DPoint) {
-        return rotateY(-rotation.x, rotateX(rotation.y / 9, affine3DPoint))
+        return rotateY(-rotation.x, rotateX(rotation.y, affine3DPoint))
     }
 
     // Rotate about the Y axis
@@ -120,15 +121,12 @@ QtObject {
     }
 
     function project(affine3DPoint) {
-        var width = 2 * size / Math.sqrt(2) //800
-        var height = 2 * size / Math.sqrt(2) //600
-
         var viewAngle = Math.PI / 2
         //console.log("viewAngle: " + viewAngle)
         //console.log("Math.tan(viewAngle / 2): " + Math.tan(viewAngle / 2))
-        var dist = width / 2 / Math.tan(viewAngle / 2)
-        var cX = width / 2
-        var cY = height / 2
+        var dist = canvasSize.x / 2 / Math.tan(viewAngle / 2)
+        var cX = canvasSize.x / 2
+        var cY = canvasSize.y / 2
         var projection = [
             [dist, 0,    start.x, 0],
             [0,    dist, start.y, 0],

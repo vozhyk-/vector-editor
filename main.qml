@@ -194,7 +194,8 @@ ApplicationWindow {
                     shapes.push(cubeComponent.createObject(this, {
                         start: start,
                         end: end,
-                        lineComponent: xiaolinWuLineComponent
+                        lineComponent: xiaolinWuLineComponent,
+                        canvasSize: Qt.point(width, height)
                     }))
                     requestPaint()
                     return
@@ -202,7 +203,8 @@ ApplicationWindow {
                     shapes.push(cylinderComponent.createObject(this, {
                         start: start,
                         end: end,
-                        lineComponent: xiaolinWuLineComponent
+                        lineComponent: xiaolinWuLineComponent,
+                        canvasSize: Qt.point(width, height)
                     }))
                     requestPaint()
                     return
