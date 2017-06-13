@@ -23,28 +23,8 @@ QtObject {
     function paint(c) {
         /* console.log("Painting") */
         /* console.log("Rotation: " + rotation) */
-        lines.map(function(line) {
-            var projectedPoints = line
-                .map(toAffine)
-                .map(rotate)
-                .map(makeFarther)
-                .map(project)
-                .map(makeQtPoint)
-
-            return lineComponent.createObject(this, {
-                start: projectedPoints[0],
-                end: projectedPoints[1]
-            })
-        }).forEach(function(drawnLine) {
-            if (abs(sub(drawnLine.end, drawnLine.start)) > 10000)
-                // Line too long - most likely an error
-                return;
-
-            /* console.log("Drawing line " + */
-            /*             drawnLine.start + " -> " + */
-            /*             drawnLine.end) */
-            drawnLine.paint(c)
-            /* console.log("Done") */
+        lines.forEach(function(line) {
+            drawLine(c, line)
         })
         /* console.log("Done painting") */
     }
@@ -52,6 +32,38 @@ QtObject {
     function p(val) {
         console.log(JSON.stringify(val))
         return val
+    }
+
+    function transformAndProjectLine(line) {
+        return line
+            .map(toAffine)
+            .map(rotate)
+            .map(makeFarther)
+            .map(project)
+            .map(makeQtPoint)
+    }
+
+    function drawProjectedLine(c, drawnLine) {
+        if (abs(sub(drawnLine.end, drawnLine.start)) > 10000)
+            // Line too long - most likely an error
+            return;
+
+        /* console.log("Drawing line " + */
+        /*             drawnLine.start + " -> " + */
+        /*             drawnLine.end) */
+        drawnLine.paint(c)
+        /* console.log("Done") */
+    }
+
+    function makeDrawnLine(projectedPoints) {
+        return lineComponent.createObject(this, {
+            start: projectedPoints[0],
+            end: projectedPoints[1]
+        })
+    }
+
+    function drawLine(c, line) {
+        drawProjectedLine(c, makeDrawnLine(transformAndProjectLine(line)))
     }
 
     function rotate(affine3DPoint) {
