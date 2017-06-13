@@ -74,14 +74,14 @@ QtObject {
         var viewAngle = Math.PI / 2
         //console.log("viewAngle: " + viewAngle)
         //console.log("Math.tan(viewAngle / 2): " + Math.tan(viewAngle / 2))
-        var s = width / 2 / Math.tan(viewAngle / 2)
+        var dist = width / 2 / Math.tan(viewAngle / 2)
         var cX = width / 2
         var cY = height / 2
         var projection = [
-            [s, 0, start.x, 0],
-            [0, s, start.y, 0],
-            [0, 0,  0, 1],
-            [0, 0,  1, 0]
+            [dist, 0,    start.x, 0],
+            [0,    dist, start.y, 0],
+            [0,    0,    0,       1],
+            [0,    0,    1,       0]
         ]
         //console.log("Projection: " + JSON.stringify(projection))
         return to2D(normalize(matmul(projection, toMat(affine3DPoint))))
