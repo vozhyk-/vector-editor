@@ -67,16 +67,31 @@ QtObject {
     }
 
     function rotate(affine3DPoint) {
+        return rotateY(rotation, rotateX(rotation / 9, affine3DPoint))
+    }
+
+    function rotateY(rotation, affine3DPoint) {
         var c = Math.cos(rotation)
         var s = Math.sin(rotation)
-        // Rotation about y
         var rotationMat = [
             [ c, 0, s, 0],
             [ 0, 1, 0, 0],
             [-s, 0, c, 0],
             [ 0, 0, 0, 1]
         ]
-        return matmul(rotationMat, toMat(affine3DPoint))
+        return applyMat(rotationMat, affine3DPoint)
+    }
+
+    function rotateX(rotation, affine3DPoint) {
+        var c = Math.cos(rotation)
+        var s = Math.sin(rotation)
+        var rotationMat = [
+            [1, 0, 0, 0],
+            [0, c,-s, 0],
+            [0, s, c, 0],
+            [0, 0, 0, 1]
+        ]
+        return applyMat(rotationMat, affine3DPoint)
     }
 
     function makeFarther(affine3DPoint) {
@@ -86,7 +101,7 @@ QtObject {
             [0, 0, 1, distance],
             [0, 0, 0, 1],
         ]
-        return matmul(translationMat, toMat(affine3DPoint))
+        return applyMat(translationMat, affine3DPoint)
     }
 
     function project(affine3DPoint) {
@@ -106,7 +121,11 @@ QtObject {
             [0,    0,    1,       0]
         ]
         //console.log("Projection: " + JSON.stringify(projection))
-        return to2D(normalize(matmul(projection, toMat(affine3DPoint))))
+        return to2D(normalize(applyMat(projection, affine3DPoint)))
+    }
+
+    function applyMat(mat, affine3DPoint) {
+        return matmul(mat, toMat(affine3DPoint))
     }
 
     // from https://stackoverflow.com/a/27205510/795068
