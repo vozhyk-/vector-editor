@@ -3,10 +3,12 @@ import QtQml 2.2
 QtObject {
     property point start
     property point end
-    property double rotation: 0
     property var lineComponent
 
-    property double size // half of the diagonal
+    property double rotation: 0
+    property double distance: 3
+
+    property double size
 
     property var lines
 
@@ -84,11 +86,10 @@ QtObject {
     }
 
     function makeFarther(affine3DPoint) {
-        var offset = 3
         var translationMat = [
             [1, 0, 0, 0],
             [0, 1, 0, 0],
-            [0, 0, 1, offset],
+            [0, 0, 1, distance],
             [0, 0, 0, 1],
         ]
         return matmul(translationMat, toMat(affine3DPoint))
