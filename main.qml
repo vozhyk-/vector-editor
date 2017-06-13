@@ -60,6 +60,11 @@ ApplicationWindow {
             }
 
             Button {
+                text: "Cylinder"
+                onClicked: canvas.mode = canvas.modes.cylinder
+            }
+
+            Button {
                 text: "Fill the last polygon"
                 onClicked: canvas.fillLastPolygon()
             }
@@ -95,6 +100,7 @@ ApplicationWindow {
                 property string clippedXWLine: "Clipped X-W line"
                 property string fillPolygon: "Fill the last polygon"
                 property string cube: "Cube"
+                property string cylinder: "Cylinder"
             }
 
             property var polygonComponent
@@ -102,6 +108,7 @@ ApplicationWindow {
             property var floodFillComponent
             property var clippedXWLineComponent
             property var cubeComponent
+            property var cylinderComponent
 
             Component.onCompleted: {
                 polygonComponent = createComponent("Polygon.qml")
@@ -109,6 +116,7 @@ ApplicationWindow {
                 floodFillComponent = createComponent("FloodFill.qml")
                 clippedXWLineComponent = createComponent("ClippedXWLine.qml")
                 cubeComponent = createComponent("Cube.qml")
+                cylinderComponent = createComponent("Cylinder.qml")
             }
 
             function createComponent(filename) {
@@ -167,6 +175,14 @@ ApplicationWindow {
                     }))
                     requestPaint()
                     return
+                } else if (mode === modes.cylinder) {
+                    shapes.push(cylinderComponent.createObject(this, {
+                        start: start,
+                        end: end,
+                        lineComponent: xiaolinWuLineComponent
+                    }))
+                    requestPaint()
+                    return
                 }
                 
                 var component
@@ -201,6 +217,10 @@ ApplicationWindow {
 
                 case modes.cube:
                     component = cubeComponent
+                    break
+
+                case modes.cylinder:
+                    component = cylinderComponent
                     break
                 }
 
