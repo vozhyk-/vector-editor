@@ -121,6 +121,7 @@ ApplicationWindow {
             property var shapes: []
             property var lastPolygon
             property url textureURL
+            property bool textureLoaded: false
             property var texture
             property string mode
 
@@ -168,12 +169,22 @@ ApplicationWindow {
 
             function loadTexture(url) {
                 textureURL = url
-                loadImage(url)
+                textureHolder.source = url
             }
 
-            onImageLoaded: {
-                var c = getContext("2d")
-                texture = c.createImageData(textureURL)
+            Image {
+                id: textureHolder
+                visible: true
+
+                onStatusChanged: {
+                    if (status != Image.Ready) {
+                        console.log('Texture is not loaded!')
+                        return
+                    }
+
+                    canvas.textureLoaded = true
+                    canvas.requestPaint()
+                }
             }
 
             MouseArea {
@@ -324,6 +335,11 @@ ApplicationWindow {
 
             onPaint: {
                 var c = getContext("2d")
+
+                if (textureLoaded) {
+                    fetchTextureData(c)
+                }
+
                 c.fillStyle = Qt.rgba(1, 1, 1, 1)
                 c.fillRect(0, 0, width, height)
                 c.fillStyle = Qt.rgba(0, 0, 0, 1)
@@ -333,6 +349,16 @@ ApplicationWindow {
 
                     line.paint(c)
                 }
+            }
+
+            function fetchTextureData(c) {
+                c.drawImage(textureHolder, 0, 0)
+                texture = c.getImageData(0, 0,
+                                         textureHolder.sourceSize.width,
+                                         textureHolder.sourceSize.height)
+
+                textureHolder.visible = false
+                textureLoaded = false
             }
 
             Timer {

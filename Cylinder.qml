@@ -38,24 +38,33 @@ LineMesh {
     }
 
     function getTextureColor(textureLocation) {
-        return colorFromImageData(texture, textureLocation)
+        var realTextureLocation = Qt.point(
+            Math.floor(textureLocation[0] * texture.width),
+            Math.floor(textureLocation[1] * texture.height))
+        return colorFromImageData(texture, realTextureLocation)
     }
 
     function colorFromImageData(data, point) {
         var pixelData = data.data
-        var max = 255
 
-        // TODO offset by point
+        var offset = 4 * (point.y * data.width + point.x)
+        var max = 255
         var result = Qt.rgba(
-            data[0] / max,
-            data[1] / max,
-            data[2] / max,
-            data[3] / max)
+            pixelData[offset + 0] / max,
+            pixelData[offset + 1] / max,
+            pixelData[offset + 2] / max,
+            pixelData[offset + 3] / max)
         //console.log(result)
         return result
     }
 
     function putPixel(c, point, color) {
+        var origFillStyle = c.fillStyle
+
+        c.fillStyle = color
+        c.fillRect(point.x, point.y, 10, 10)
+
+        c.fillStyle = origFillStyle
     }
 
     function trianglesToLines(projectedTriangles) {
