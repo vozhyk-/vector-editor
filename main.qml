@@ -1,7 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
-//import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs 1.2
 
 ApplicationWindow {
     title: "Vector Editor"
@@ -100,6 +100,17 @@ ApplicationWindow {
                     text: "Animate 3D mesh rotation"
                 }
             }
+
+            Button {
+                text: "Load texture"
+                onClicked: openTextureDialog.visible = true
+
+                FileDialog {
+                    id: openTextureDialog
+                    folder: shortcuts.home
+                    onAccepted: canvas.loadTexture(fileUrls[0])
+                }
+            }
         }
 
         Canvas {
@@ -109,6 +120,8 @@ ApplicationWindow {
 
             property var shapes: []
             property var lastPolygon
+            property url textureURL
+            property var texture
             property string mode
 
             property QtObject modes: QtObject {
@@ -151,6 +164,16 @@ ApplicationWindow {
                 }
 
                 return result
+            }
+
+            function loadTexture(url) {
+                textureURL = url
+                loadImage(url)
+            }
+
+            onImageLoaded: {
+                var c = getContext("2d")
+                texture = c.createImageData(textureURL)
             }
 
             MouseArea {
@@ -216,6 +239,7 @@ ApplicationWindow {
                         start: start,
                         end: end,
                         lineComponent: xiaolinWuLineComponent,
+                        texture: texture,
                         canvasSize: Qt.point(width, height)
                     }))
                     requestPaint()

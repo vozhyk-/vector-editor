@@ -4,6 +4,8 @@ LineMesh {
     property double height // half of the height
     property double radius
 
+    property var texture
+
     property int nPrismSides: 17
 
     Component.onCompleted: {
