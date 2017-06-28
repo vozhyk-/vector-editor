@@ -24,7 +24,9 @@ LineMesh {
 
         var result = []
         triangles.forEach(function(triangle) {
-            var projected = triangle.map(transformAndProjectPoint)
+            var projected = triangle.map(function(vertex) {
+                return transformAndProjectPoint(vertex.point)
+            })
 
             if (!shouldBeDrawn(projected))
                 return;
@@ -62,11 +64,11 @@ LineMesh {
         // "lower" is actually above "upper"
         var lowerBaseVertices = computeBaseVertices(-height)
         var upperBaseVertices = computeBaseVertices(height)
-        
+
         var result = computeBase(lowerBaseVertices, false)
             .concat(computeSides(lowerBaseVertices, upperBaseVertices))
             .concat(computeBase(upperBaseVertices, true))
-        
+
         return result
     }
 
@@ -87,15 +89,22 @@ LineMesh {
         var result = []
 
         var center = [0, y, 0]
-        result.push(center)
+        result.push({
+            point: center,
+            textureLocation: [1/4, 1/4]
+        })
 
         for (var i = 1; i <= nPrismSides; i++) {
             var angle = 2 * Math.PI / nPrismSides * (i - 1)
-            result.push( /* 3D point */ [
-                radius * Math.cos(angle),
-                y,
-                radius * Math.sin(angle)
-            ])
+            result.push({
+                point: [
+                    radius * Math.cos(angle),
+                    y,
+                    radius * Math.sin(angle)
+                ],
+                textureLocation: [1/5, 1/5] // TODO
+                // TODO make it different for the base and sides
+            })
         }
 
         return result
