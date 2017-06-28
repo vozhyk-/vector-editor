@@ -14,29 +14,45 @@ ApplicationWindow {
                 text: "Modes:"
             }
 
-            Button {
-                text: "Built-in line"
-                onClicked: canvas.mode = canvas.modes.builtInLine
+            Column {
+                Button {
+                    text: "Built-in line"
+                    onClicked: canvas.mode = canvas.modes.builtInLine
+                }
+
+                Button {
+                    text: "DDA line"
+                    onClicked: canvas.mode = canvas.modes.ddaLine
+                }
+
+                Button {
+                    text: "Xiaolin Wu line"
+                    onClicked: canvas.mode = canvas.modes.xiaolinWuLine
+                }
             }
 
-            Button {
-                text: "DDA line"
-                onClicked: canvas.mode = canvas.modes.ddaLine
+            Column {
+                Button {
+                    text: "Midpoint circle"
+                    onClicked: canvas.mode = canvas.modes.midpointCircle
+                }
+
+                Button {
+                    text: "Xiaolin Wu circle"
+                    onClicked: canvas.mode = canvas.modes.xiaolinWuCircle
+                }
             }
 
-            Button {
-                text: "Midpoint circle"
-                onClicked: canvas.mode = canvas.modes.midpointCircle
-            }
+            Column {
+                Text {
+                    text: "Thickness:"
+                }
 
-            Button {
-                text: "Xiaolin Wu line"
-                onClicked: canvas.mode = canvas.modes.xiaolinWuLine
-            }
-
-            Button {
-                text: "Xiaolin Wu circle"
-                onClicked: canvas.mode = canvas.modes.xiaolinWuCircle
+                TextField {
+                    id: thicknessField
+                    placeholderText: "1"
+                    validator: IntValidator {}
+                }
             }
 
             Button {
@@ -44,49 +60,45 @@ ApplicationWindow {
                 onClicked: canvas.mode = canvas.modes.floodFill
             }
 
-            Button {
-                text: "Define a polygon"
-                onClicked: canvas.mode = canvas.modes.definePolygon
+            Column {
+                Button {
+                    text: "Define a polygon"
+                    onClicked: canvas.mode = canvas.modes.definePolygon
+                }
+
+                Button {
+                    text: "Clipped X-W line"
+                    onClicked: canvas.mode = canvas.modes.clippedXWLine
+                }
+
+                Button {
+                    text: "Fill the last polygon"
+                    onClicked: canvas.fillLastPolygon()
+                }
             }
 
-            Button {
-                text: "Clipped X-W line"
-                onClicked: canvas.mode = canvas.modes.clippedXWLine
+            Column {
+                Button {
+                    text: "Cube"
+                    onClicked: canvas.mode = canvas.modes.cube
+                }
+
+                Button {
+                    text: "Cylinder"
+                    onClicked: canvas.mode = canvas.modes.cylinder
+                }
             }
 
-            Button {
-                text: "Cube"
-                onClicked: canvas.mode = canvas.modes.cube
-            }
+            Column {
+                Button {
+                    text: "Rotate 3D meshes"
+                    onClicked: canvas.mode = canvas.modes.rotate
+                }
 
-            Button {
-                text: "Cylinder"
-                onClicked: canvas.mode = canvas.modes.cylinder
-            }
-
-            Button {
-                text: "Rotate 3D meshes"
-                onClicked: canvas.mode = canvas.modes.rotate
-            }
-
-            CheckBox {
-                id: animateRotation
-                text: "Animate 3D mesh rotation"
-            }
-
-            Button {
-                text: "Fill the last polygon"
-                onClicked: canvas.fillLastPolygon()
-            }
-
-            Text {
-                text: "Thickness:"
-            }
-
-            TextField {
-                id: thicknessField
-                placeholderText: "1"
-                validator: IntValidator {}
+                CheckBox {
+                    id: animateRotation
+                    text: "Animate 3D mesh rotation"
+                }
             }
         }
 
