@@ -14,38 +14,80 @@ LineMesh {
     }
 
     function paint(c) {
-        computeProjectedLines().forEach(function(projectedPoints) {
+        var triangles = computeTriangles()
+        var projectedTriangles = triangles
+            .map(projectTriangle)
+            .filter(shouldBeDrawn)
+
+        trianglesToLines(projectedTriangles).forEach(function(projectedPoints) {
             drawProjectedLine(c, makeDrawnLine(projectedPoints))
         })
+
+        drawTexture(c, projectedTriangles)
     }
 
-    function computeProjectedLines() {
-        var triangles = computeTriangles()
-
-        var result = []
-        triangles.forEach(function(triangle) {
-            var projected = triangle.map(function(vertex) {
-                return transformAndProjectPoint(vertex.point)
+    function drawTexture(c, projectedTriangles) {
+        // Draw vertices with colors from the texture
+        projectedTriangles.forEach(function(triangle) {
+            triangle.forEach(function(vertex) {
+                putPixel(c, vertex.point,
+                         getTextureColor(vertex.textureLocation));
             })
+        })
+        // TODO Draw the other pixels
+    }
 
-            if (!shouldBeDrawn(projected))
-                return;
+    function getTextureColor(textureLocation) {
+        return colorFromImageData(texture, textureLocation)
+    }
 
-            result.push([projected[0], projected[1]])
-            result.push([projected[1], projected[2]])
-            result.push([projected[2], projected[0]])
+    function colorFromImageData(data, point) {
+        var pixelData = data.data
+        var max = 255
+
+        // TODO offset by point
+        var result = Qt.rgba(
+            data[0] / max,
+            data[1] / max,
+            data[2] / max,
+            data[3] / max)
+        //console.log(result)
+        return result
+    }
+
+    function putPixel(c, point, color) {
+    }
+
+    function trianglesToLines(projectedTriangles) {
+        var result = []
+        projectedTriangles.forEach(function(projectedTriangle) {
+            result.push([projectedTriangle[0].point,
+                         projectedTriangle[1].point])
+            result.push([projectedTriangle[1].point,
+                         projectedTriangle[2].point])
+            result.push([projectedTriangle[2].point,
+                         projectedTriangle[0].point])
         })
         return result
     }
 
-    function shouldBeDrawn(projected) {
+    function projectTriangle(triangle) {
+        return triangle.map(function(vertex) {
+            return {
+                point: transformAndProjectPoint(vertex.point),
+                textureLocation: vertex.textureLocation
+            }
+        })
+    }
+
+    function shouldBeDrawn(projectedTriangle) {
         var prod = crossProduct([
-            projected[1].x - projected[0].x,
-            projected[1].y - projected[0].y,
+            projectedTriangle[1].point.x - projectedTriangle[0].point.x,
+            projectedTriangle[1].point.y - projectedTriangle[0].point.y,
             0
         ], [
-            projected[2].x - projected[0].x,
-            projected[2].y - projected[0].y,
+            projectedTriangle[2].point.x - projectedTriangle[0].point.x,
+            projectedTriangle[2].point.y - projectedTriangle[0].point.y,
             0
         ])
 
